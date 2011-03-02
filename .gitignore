@@ -17,6 +17,8 @@ pkg
 # generation dirs
 cache
 output
+source
+scripts
 
 # Have editor/IDE/OS specific files you need to ignore? Consider using a global gitignore: 
 #
@@ -43,4 +45,4 @@ output
 #.\#*
 #
 # For vim:
-*.swp
+.*.sw?

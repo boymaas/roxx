@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby 
 
+require 'lib/roxx'
+
 # == Synopsis 
 #   This is a sample description of the application.
 #   Blah blah blah.
@@ -137,7 +139,11 @@ class App
     end
     
     def process_command
-      # TO DO - do whatever this app does
+      filename = @arguments[0]
+
+      script = eval File.open(filename).read
+      target = filename.chomp('.rb') + '.mp3'
+      script.save( target )
       
       #process_standard_input # [Optional]
     end
@@ -152,10 +158,6 @@ class App
       #end
     end
 end
-
-
-# TO DO - Add your Modules, Classes, etc
-
 
 # Create and run the application
 app = App.new(ARGV, STDIN)

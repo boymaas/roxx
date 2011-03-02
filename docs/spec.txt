@@ -1,0 +1,17 @@
+# Sox based renderer
+
+Sox has file and effects. Every action on a file is an effect.
+
+1. trimming  a file
+2. setting a volume.
+
+One has 2 ways of working with files:
+
+1. merging the file
+  * one cannot apply effects ..
+  * one cannot trim ..
+2. concatting the file
+  * effects are possible ..
+  * one can trim the output file ..
+
+Only merging two audiofiles is not an effect. 

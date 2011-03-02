@@ -1,5 +1,5 @@
 require 'spec/helpers'
-require 'lib/sox'
+require 'lib/roxx'
 
 class WavTest
   include SoundInfo

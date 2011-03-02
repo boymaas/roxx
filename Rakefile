@@ -26,21 +26,6 @@ Jeweler::Tasks.new do |gem|
 end
 Jeweler::RubygemsDotOrgTasks.new
 
-require 'rake/testtask'
-Rake::TestTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.verbose = true
-end
-
-require 'rcov/rcovtask'
-Rcov::RcovTask.new do |spec|
-  spec.libs << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.verbose = true
-end
-
-task :default => :spec
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
@@ -51,3 +36,20 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+task :default => :normalize
+
+# Generate file dependencies
+SourceFiles = FileList['source/**/*.wav'].reject {|p| p =~ /\.normalized\.wav$/}
+NormalizedFiles = []
+SourceFiles.each do |source|
+  normalized_file = source.chomp('.wav') + '.normalized.wav'
+  NormalizedFiles << normalized_file
+  file normalized_file => source  do
+    sh "sox #{source} #{normalized_file} norm"
+  end
+end
+
+desc "Normalizes all audio's"
+task :normalize => NormalizedFiles 
+

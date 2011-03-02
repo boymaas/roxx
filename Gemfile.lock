@@ -1,18 +1,32 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    activesupport (2.3.8)
     bacon (1.1.0)
+    blankslate (2.1.2.3)
+    columnize (0.3.1)
+    facets (2.8.4)
     git (1.2.5)
     jeweler (1.5.2)
       bundler (~> 1.0.0)
       git (>= 1.2.5)
       rake
+    linecache (0.43)
     rake (0.8.7)
+    ruby-debug (0.10.3)
+      columnize (>= 0.1)
+      ruby-debug-base (~> 0.10.3.0)
+    ruby-debug-base (0.10.3)
+      linecache (>= 0.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport
   bacon
+  blankslate
   bundler (~> 1.0.0)
+  facets
   jeweler (~> 1.5.2)
+  ruby-debug

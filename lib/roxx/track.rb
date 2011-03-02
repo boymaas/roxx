@@ -1,4 +1,9 @@
+# Empty module to add custom DSL statements
+module TrackExtentions
+end
+
 class Track
+  include TrackExtentions
   include SoxRenderable
   include CacheInfo
 
@@ -9,6 +14,7 @@ class Track
     @sounds = []
     @effects = []
     @volume = 1
+    @focus = false
   end
 
   def to_hash
@@ -22,26 +28,61 @@ class Track
     end
   end
 
+  def is_focused?
+    @focus
+  end
+
   # DSL
+  def focus
+    @focus = true
+  end
+
   def volume v = nil
     v.nil? ? @volume : @volume = v
   end
 
   def sound *params
     options = params.last.is_a?(Hash) ? params.pop : {}
-    name = params.first.is_a?(Symbol) ? params.shift : nil
-    path = params.first.is_a?(String) ? params.shift : nil
 
-    @sounds << Sound.new(self, options.merge(:path => path, :name => name))
+    name,path,sound = nil,nil,nil
+    case params.first
+    when Symbol
+      name = params.shift
+    when String
+      path = params.shift
+    when Sound
+      sound = params.shift
+      sound.track = self
+      options.each {|k,v| sound.send("#{k}=",v)}
+    end
+
+    @sounds << ( sound || Sound.new(self, options.merge(:path => path, :name => name)) )
     if block_given?
       @sounds.last.instance_eval(&block)
     end
   end
 
-  def effect name = nil, *params
-    @effects << Effect.new(self, name, *params)
+  def concat_sounds sounds, opts = {}
+    opts.reverse_merge! :start_at => 0, :interval => 5
+
+    p = opts[:start_at]
+    for s in sounds
+      s.start_at = p
+      sound s
+      p += s.duration + opts[:interval]
+    end
+
   end
 
+  def effect name = nil, *params
+    @effects << Effect.build(self, name, *params)
+  end
+
+  def preset name
+    self.instance_eval &::PreSets[name]
+  end
+
+  # Sox interaction
   def to_sox_param
     "-v #{@volume} #{@file.path}"
   end

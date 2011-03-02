@@ -116,7 +116,7 @@ module SoxRenderable
     # notice: how i match on duration.nil? if no duration is specified .. til end of file ..
     #         which is same as complete file
     if e0.start_at == 0 && ( e0.duration.nil? || e0.duration == file.info[:length_seconds] )
-      file = sox file.path, effects.map(&:to_sox_param) * ' '
+      file = sox file.path, effects.map{ |e| e.to_sox_param(file) } * ' '
     else
       sound = Sound.new(nil, :effects => effects, :start_at=>e0.start_at, :duration=>e0.duration, :file => file)
       file = render_sounds( [ sound ], file )

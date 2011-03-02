@@ -3,7 +3,7 @@ class Sound
   include SoundInfo
   include CacheInfo
 
-  attr_accessor :start_at, :volume, :file, :offset
+  attr_accessor :start_at, :volume, :file, :offset, :track, :duration
   def initialize(track, options = {})
     @track = track
     @start_at = options.delete(:start_at) || 0
@@ -31,6 +31,10 @@ class Sound
 
   def sound_info
     super(path)
+  end
+
+  def length_in_seconds
+    sound_info[:length_seconds]
   end
 
   # path is defined by either
@@ -67,6 +71,6 @@ class Sound
 
   # DSL
   def effect name = nil, *params
-    @effects << Effect.new(self, name, *params)
+    @effects << Effect.build(self, name, *params)
   end
 end

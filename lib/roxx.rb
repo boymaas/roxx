@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'facets'
 require 'yaml'
 require 'pathname'
@@ -26,6 +27,9 @@ require 'roxx/track'
 require 'roxx/sound'
 require 'roxx/silence'
 require 'roxx/effect'
+require 'roxx/effect_library'
+
+require 'roxx/preset'
 
 # DSL
 #
@@ -33,3 +37,4 @@ def script &block
   ( script = Script.new ).instance_eval &block
   script
 end
+

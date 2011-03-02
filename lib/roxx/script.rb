@@ -11,6 +11,11 @@ class Script
   end
 
   def render
+    # filter out non-focused tracks
+    if @tracks.any?(&:is_focused?)
+      @tracks.reject! {|t| !t.is_focused?}
+    end
+
     @file = cache_file :script_file, [self.to_hash] do
       @tracks.map(&:render)
       if @tracks.count == 1
@@ -36,7 +41,7 @@ class Script
     render
     case path
     when /\.mp3$/
-      mp3_file = cache_file :mp3_file, [self.to_hash,path,:mp3] do
+      mp3_file = cache_file :mp3_file, [self.to_hash,:mp3] do
         `lame #{@file.path} #{path} `
         File.open(path)
       end

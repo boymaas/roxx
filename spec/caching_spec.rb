@@ -1,4 +1,4 @@
-require 'lib/sox'
+require 'lib/roxx'
 require 'tempfile'
 
 class CacheTest
@@ -27,6 +27,7 @@ describe "cache_info" do
   it "should just cache a file" do
     @cache_test.cache_file :test_file, [:a,:b,:c] do
       (tmp = Tempfile.new(:test)).write('blah die blah')
+      tmp.flush
       tmp
     end
 
