@@ -4,13 +4,22 @@ class Script
   def initialize
     @tracks = []
     @file = nil
+
+    @dependencies
   end
 
   def to_hash
     hexdigest(@tracks, [@tracks.map(&:volume)])
   end
 
+  # all source files used in this script
+  def dependencies
+    @tracks.map(&:dependencies).flatten.sort.uniq
+  end
+
   def render
+    
+
     # filter out non-focused tracks
     # and set volume to 1
     if @tracks.any?(&:is_focused?)

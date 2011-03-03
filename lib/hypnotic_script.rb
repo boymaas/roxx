@@ -53,7 +53,8 @@ def hypnotic_script src_voices, options = {}, &block
      # generate a track full of suggestinos
      track :suggestions do
        volume 0.05
-       generate_suggestions( src_suggestions, :start_at => 0, :interval =>4, :duration => duration )
+       sound "source/suggestions/#{src_suggestions}.mp3", :duration => duration
+       #generate_suggestions( src_suggestions, :start_at => 0, :interval =>4, :duration => duration )
 
        effect :fade, :fade_in_length => 60, :fade_out_length => 60
        preset :hypnotic_voice

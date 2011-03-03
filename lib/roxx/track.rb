@@ -17,6 +17,10 @@ class Track
     @focus = false
   end
 
+  def dependencies
+    @sounds.map(&:path)
+  end
+
   def to_hash
     hexdigest(@sounds, @effects)
   end

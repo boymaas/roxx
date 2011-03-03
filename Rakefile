@@ -64,16 +64,37 @@ def normalize_deps
   end
 end
 
+desc "Setup and render roxx scripts, making sure all sources and suggestion are rendered"
+task :roxx => :"roxx:default"
+
 namespace :roxx do
 
   desc "takes all the steps necessary to have a consistent roxx:environment"
-  task :default => [:normalize, :gen_suggestion_tracks]
+  task :default => [:normalize, :gen_suggestion_tracks, :gen_scripts]
 
   desc "Restores mp3 sources to sources/ dir as wave files"
   task :normalize => normalize_deps
 
   require 'lib/roxx'
   require 'lib/hypnotic_script'
+
+  def roxxscript_dependencies script
+    eval(File.open(script).read).dependencies
+  end
+
+  require 'ruby-debug'
+  # Generate all scripts
+  RoxxScripts = FileList["scripts/**.rb"]
+  RoxxScriptTargets = RoxxScripts.map {|rs| rs.chomp('.rb') + '.mp3'}
+  RoxxScripts.zip(RoxxScriptTargets).each do |rss, rst|
+    file rst => [rss, roxxscript_dependencies(rss)].flatten do
+      sh "bin/roxx #{rss}"
+    end
+  end
+
+  desc "Generates all configured scripts"
+  task :gen_scripts => RoxxScriptTargets
+
 
   suggestion_track_targets = FileList['source/suggestions/*'].select {|f| File.directory?( f ) }.map do |suggestion_dir|
 
