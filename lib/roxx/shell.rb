@@ -22,7 +22,10 @@ def sox original, *params
   target
 end
 
+class SoxException < Exception ; end
+
 def run cmd
   puts cmd
-  `#{cmd}`
+  r = `#{cmd}`
+  raise SoxException.new(r) unless $?.success?
 end

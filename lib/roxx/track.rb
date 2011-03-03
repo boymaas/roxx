@@ -65,6 +65,7 @@ class Track
     if block_given?
       @sounds.last.instance_eval( &block )
     end
+    @sounds.last
   end
 
   def concat_sounds sounds, opts = {}
@@ -72,9 +73,8 @@ class Track
 
     p = opts[:start_at]
     for s in sounds
-      s.start_at = p
-      sound s
-      p += s.duration + opts[:interval]
+      ns = sound s, :start_at => p
+      p += ns.duration + opts[:interval]
     end
 
   end
