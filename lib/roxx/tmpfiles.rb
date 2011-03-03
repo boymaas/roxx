@@ -2,7 +2,7 @@ class WavTempfile < Tempfile
   include SoundInfo
 
   def make_tmpname(basename, n)
-    sprintf('%s%d.%d.wav', basename, $$, n)
+    sprintf('%s%d.%d.mp3', basename, $$, n)
   end
 
 end

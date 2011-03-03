@@ -41,7 +41,7 @@ class Track
     v.nil? ? @volume : @volume = v
   end
 
-  def sound *params
+  def sound *params, &block
     options = params.last.is_a?(Hash) ? params.pop : {}
 
     name,path,sound = nil,nil,nil
@@ -54,11 +54,16 @@ class Track
       sound = params.shift
       sound.track = self
       options.each {|k,v| sound.send("#{k}=",v)}
+    else
+      if [File, Tempfile].any? {|t| params.first.is_a?( t ) }
+        file = params.first
+        sound = RenderedSound.new(self, options.merge(:file => file, :path => file.path))
+      end
     end
 
     @sounds << ( sound || Sound.new(self, options.merge(:path => path, :name => name)) )
     if block_given?
-      @sounds.last.instance_eval(&block)
+      @sounds.last.instance_eval( &block )
     end
   end
 

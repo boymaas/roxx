@@ -62,15 +62,21 @@ class Sound
   end
 
   def render
-    @file = cache_file :sound_file, [self.to_hash] do
+  #  @file = cache_file :sound_file, [self.to_hash] do
       prepare
       # calls SoxRenderable
       super(@file, @sounds, @effects)
-    end
+  #  end
   end
 
   # DSL
   def effect name = nil, *params
     @effects << Effect.build(self, name, *params)
+  end
+end
+
+class RenderedSound < Sound
+  def render
+    @file
   end
 end

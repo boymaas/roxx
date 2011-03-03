@@ -37,19 +37,25 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-task :default => :normalize
-
-# Generate file dependencies
-SourceFiles = FileList['source/**/*.wav'].reject {|p| p =~ /\.normalized\.wav$/}
-NormalizedFiles = []
-SourceFiles.each do |source|
-  normalized_file = source.chomp('.wav') + '.normalized.wav'
-  NormalizedFiles << normalized_file
-  file normalized_file => source  do
-    sh "sox #{source} #{normalized_file} norm"
-  end
+task :default do
+  puts "Welcome to Roxx, run rake -T to see what can be done ..."
 end
 
-desc "Normalizes all audio's"
-task :normalize => NormalizedFiles 
+namespace :roxx do
+  def normalize_deps 
+    # restoring sources from mp3 backup
+    FileList['source-mp3/**/*.mp3'].map do |sf|
+      target = Pathname.new(sf.gsub(%r{source-mp3/(.*).mp3}, 'source/\1.mp3'))
+      source = Pathname.new(sf)
+      file target => source do
+        # create directory
+        FileUtils.mkdir_p target.dirname
+        sh "sox #{source} #{target} norm"
+      end
+      target
+    end
+  end
 
+  desc "Restores mp3 sources to sources/ dir as wave files"
+  task :normalize => normalize_deps
+end

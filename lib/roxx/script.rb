@@ -12,8 +12,10 @@ class Script
 
   def render
     # filter out non-focused tracks
+    # and set volume to 1
     if @tracks.any?(&:is_focused?)
       @tracks.reject! {|t| !t.is_focused?}
+      @tracks.each { |t| t.volume 1 }
     end
 
     @file = cache_file :script_file, [self.to_hash] do
@@ -41,14 +43,16 @@ class Script
     render
     case path
     when /\.mp3$/
-      mp3_file = cache_file :mp3_file, [self.to_hash,:mp3] do
-        `lame #{@file.path} #{path} `
-        File.open(path)
-      end
-      # if first cache hit, no need to copy it over
-      unless mp3_file.path == path
-        FileUtils.cp mp3_file.path, path 
-      end
+      FileUtils.cp @file.path, path
+    when /\.lame\.mp3$/
+     mp3_file = cache_file :mp3_file, [self.to_hash,:mp3] do
+       `lame #{@file.path} #{path} `
+       File.open(path)
+     end
+     # if first cache hit, no need to copy it over
+     unless mp3_file.path == path
+       FileUtils.cp mp3_file.path, path 
+     end
     else
       sox @file.path, :target => OpenStruct.new(:path => path)
     end

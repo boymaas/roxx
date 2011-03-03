@@ -76,12 +76,16 @@ module SoxRenderable
       if gapeless_sound_list.size == 1 and gapeless_sound_list[0].volume == 1
         gapeless_sound_list[0].file
       else
-        sox gapeless_sound_list.map(&:file).map(&:path)
+       _garbage_collect gapeless_sound_list.map(&:file) do |filelist|
+         sox filelist.map(&:path)
+       end
       end
 
     # merge with original file if exist?
     if file
-      merged_file = sox [file, concatenated_sounds].map(&:path), :sox_options => '-m'
+      merged_file = _garbage_collect [file, concatenated_sounds] do |filelist|
+        sox filelist.map(&:path), :sox_options => '-m'
+      end
     else
       merged_file = concatenated_sounds
     end
@@ -116,7 +120,9 @@ module SoxRenderable
     # notice: how i match on duration.nil? if no duration is specified .. til end of file ..
     #         which is same as complete file
     if e0.start_at == 0 && ( e0.duration.nil? || e0.duration == file.info[:length_seconds] )
-      file = sox file.path, effects.map{ |e| e.to_sox_param(file) } * ' '
+      file = _garbage_collect [ file ]  do |f|
+        sox f[0].path, effects.map{ |e| e.to_sox_param(f[0]) } * ' '
+      end
     else
       sound = Sound.new(nil, :effects => effects, :start_at=>e0.start_at, :duration=>e0.duration, :file => file)
       file = render_sounds( [ sound ], file )
@@ -152,6 +158,17 @@ module SoxRenderable
   def _partnerize a 
     return [] if a.blank?
     a.zip(a.tail)
+  end
+
+  def _garbage_collect filelist, &block
+    r = yield(filelist)
+    filelist.each do |f|
+      f.close unless f.closed?
+      if f.is_a? Tempfile # checks ancestors
+        f.unlink
+      end
+    end
+    r
   end
 
 end
