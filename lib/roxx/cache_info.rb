@@ -1,6 +1,6 @@
 module CacheInfo
   def cache_data prefix, cache_params
-    _cache_path = cache_pathname(prefix, cache_params)
+    _cache_path = cache_pathname(prefix, cache_params, :yml)
     if _cache_path.exist?
       return YAML.load_file(_cache_path)
     end
@@ -16,10 +16,10 @@ module CacheInfo
   # either cache using file or execute block
   #
   # cache_file [:this, :are, :cache, :params]
-  def cache_file prefix, cache_params
+  def cache_file prefix, cache_params, opts = {}
     # when MD5 hexdigit of cache_params matches
     # read file from cache
-    _cache_path = cache_pathname(prefix, cache_params)
+    _cache_path = cache_pathname(prefix, cache_params, opts.fetch(:ext, IntermediateFileFormat))
 
     if _cache_path.exist?
       return File.open(_cache_path)
@@ -45,12 +45,12 @@ module CacheInfo
     MD5.hexdigest params * ' '
   end
 
-  def cache_filename prefix, params
-    "cache/#{prefix}_#{cache_genid(params)}"
+  def cache_filename prefix, params, ext
+    "cache/#{prefix}_#{cache_genid(params)}.#{ext}"
   end
 
-  def cache_pathname prefix, params
-    Pathname.new(cache_filename(prefix,params))
+  def cache_pathname prefix, params, ext
+    Pathname.new(cache_filename(prefix,params,ext))
   end
 
 end

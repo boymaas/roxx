@@ -55,7 +55,11 @@ class Track
     when String
       path = params.shift
     when Sound
-      sound = params.shift
+      # notice: create new instance of sound here
+      # otherwise when adding same Sound.new object changes
+      # to one will happen on every reference. This may cause
+      # strange effects ...
+      sound = params.shift.dup
       sound.track = self
       options.each {|k,v| sound.send("#{k}=",v)}
     else

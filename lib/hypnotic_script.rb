@@ -17,29 +17,30 @@ def hypnotic_script src_voices, options = {}, &block
   voice_track_length = src_voices.map(&:length_in_seconds).sum + ( ( src_voices.size - 1 ) * 10 + 60 ) # interval
   duration = options.delete(:duration) || voice_track_length + 20
 
-  if voice_track_length > background_track_length
-    raise "not enough background for this voice track background_length = #{background_track_length} vs calculated duration = #{duration}. #{duration - background_track_length} seconds overflow "
-  end
-  if duration > background_track_length
-    raise "not enough background for this durations #{duration}"
-  end
+  #if voice_track_length > background_track_length
+  #  raise "not enough background for this voice track background_length = #{background_track_length} vs calculated duration = #{duration}. #{duration - background_track_length} seconds overflow "
+  #end
+  #if duration > background_track_length
+  #  raise "not enough background for this durations #{duration}"
+  #end
 
   script do
     if block_given?
       instance_eval(&block)
     end
     track :backgrounds do
-      volume 0.05
+      volume 0.15
 
       src_backgrounds.each {|bg|
-        sound bg, :duration => duration
+         repeat = (duration/bg.duration).to_i + 1
+         concat_sounds [bg]*repeat, :interval => 0
       }
 
-      effect :fade, :fade_in_length => 20, :fade_out_length => 20
+      effect :fade, :fade_in_length => 20, :stop_time => duration, :fade_out_length => 20
     end
 
     track :voice do
-      volume 0.9
+      volume 1.0
 
       concat_sounds src_voices, :interval => 10, :start_at => 30 
 

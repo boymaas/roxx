@@ -52,19 +52,23 @@ class Script
     render
     case path
     when /\.mp3$/
-      FileUtils.cp @file.path, path
-    when /\.lame\.mp3$/
-     mp3_file = cache_file :mp3_file, [self.to_hash,:mp3] do
-       `lame #{@file.path} #{path} `
-       File.open(path)
-     end
-     # if first cache hit, no need to copy it over
-     unless mp3_file.path == path
-       FileUtils.cp mp3_file.path, path 
-     end
+      if IntermediateFileFormat == :mp3
+        FileUtils.cp @file.path, path
+      elsif IntermediateFileFormat == :au
+        sox @file.path, :target => OpenStruct.new(:path => path)
+      else
+        mp3_file = cache_file :mp3_file, [self.to_hash,:lame_encoding] do
+          `lame --preset extreme #{@file.path} #{path} `
+          File.open(path)
+        end
+        # if first cache hit, no need to copy it over
+        unless mp3_file.path == path
+          FileUtils.cp mp3_file.path, path 
+        end
+      end
     else
       sox @file.path, :target => OpenStruct.new(:path => path)
     end
   end
-  
+
 end

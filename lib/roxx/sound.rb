@@ -20,7 +20,7 @@ class Sound
   end
 
   def to_hash
-    hexdigest(path, path.mtime, @offset, @duration, @start_at, @volume, @sounds, @effects)
+    hexdigest(path, path ? path.mtime : 0, @offset, @duration, @start_at, @volume, @sounds, @effects)
   end
 
   # duration is baed on ether a fixed
@@ -40,7 +40,7 @@ class Sound
   # path is defined by either
   # a rendered file or by it initialized value
   def path
-    @file ? Pathname.new(@file.path) : @path
+    @file && !@file.path.nil? ? Pathname.new(@file.path) : @path
   end
 
   # calculate stop at
