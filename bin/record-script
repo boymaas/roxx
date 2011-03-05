@@ -1,0 +1,88 @@
+#!/usr/bin/env ruby
+
+# When speaking in long scripts, one makes often
+# a lot of mistakes .. this cmdline program eases the process of recording 
+# a script
+#
+# record-script script-file.txt
+
+module RecCmds
+  protected
+  # String -> String
+  def record_cmd target
+    "ecasound -f:f32,2,44100 -i jack,system -f:s16,2 -o #{target}"
+  end
+end 
+
+class ScriptRecording
+
+  # String -> String -> String -> ScriptRecording
+  def initialize(type, name, script)
+    @type, @name, @original_text = type, name, script
+    @paragraphs = split_into_paragraphs(script)
+  end
+
+  protected
+
+  # String -> [ParagraphRecording]
+  def split_into_paragraphs
+  end
+
+  # record
+  # [ParagraphRecording]
+  def record
+    # check if directory already exists
+    # raise when exists .. make sure we don't overwrite
+
+    # forall paragraphs call record
+    # render recoding in recoridng dir
+  end
+
+  # Pathname -> Boolean
+  def render
+    # remove silences at beginning and end
+    # call sox to concatenate recordings
+    # save into target sctip
+  end
+
+  #  Pathname
+  def directory_name
+    # determine dirname based on type and name
+  end
+  def script_target_path
+    # determine script target path based on type and name
+  end
+end
+
+class ParagraphRecording
+  include RecCmds
+
+  # String -> ParagraphRecording
+  def initialize paragraph
+    @paragraph = paragraph
+    @file = nil
+  end
+
+  # Boolean
+  #
+  # returns true when recording was defined a success
+  #
+  def record
+    # when file is defined, this is a second
+    # recording, unlink previous one and create
+    # new target
+
+    # display paragraph
+    # emit cmdline question:
+    # [Enter to start recording]
+    # record
+    # [Enter for next paragraph, Space to do again]
+  end
+
+end
+
+
+
+
+
+
