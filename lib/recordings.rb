@@ -95,8 +95,8 @@ class ParagraphRecording
     end
 
     # display paragraph
-    print ""
-    ohai "Preparing to record paragraph #{@count}", "", @paragraph, ""
+    Tty.clear
+    ohai "Preparing to record paragraph #{@count + 1} of #{@script_recording.paragraphs.size}", "", @paragraph, ""
 
     # [Enter to start recording]
     ohai "Press enter to start recording, hit Enter again to stop recording"

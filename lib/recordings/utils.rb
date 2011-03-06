@@ -15,6 +15,8 @@ class Tty
     def reset; escape 0; end
     def em; underline 39; end
 
+    def clear; system('clear') ; end
+
     def getc
       system("stty raw -echo")
       c = STDIN.getc

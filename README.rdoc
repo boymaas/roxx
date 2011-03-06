@@ -1,16 +1,43 @@
-= roxx
+= Roxx, a sox wrapper to render hypnotic scripts 
 
-Description goes here.
+Piece of software to render hypnotic scripts using following workflow.
 
-== Contributing to roxx
- 
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
-* Fork the project
-* Start a feature/bugfix branch
-* Commit and push until you are happy with your contribution
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+  ./bin/record-script source/<type>/<name>.txt
+
+Will record in:
+
+  recordings/<type>/<name>/paragraph-%02d.wav
+
+And will render to:
+
+  source/<type>/<name>.mp3
+
+== scripts
+
+Create a script file inside `scripts/':
+
+  script do
+    track do
+    end
+  end
+
+Or use a pattern:
+  
+  hypnotic_script [scripts ...], :src_background => .., :src_suggestions => ... do
+    ... add extra tracks .. effects 
+  end
+
+== render or rake the script
+
+  ./bin/roxx scripts/<path>
+
+== Rake and dependencies
+
+  recordings --> sources --> normalize sources --> scripts --> rendered-mp3
+
+Complete dependency chain programmed in. When running `rake rox' it will check the complete chain and
+all will work as expectd. Recordings will be rendered to sources, which will then be normalised. And all scripts 
+which uses sources which are newer will re-render. Updated scripts will also be re-reendered. Nothing to track here.
 
 == Copyright
 

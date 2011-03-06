@@ -22,7 +22,7 @@ require 'lib/recordings'
 
 class App
   VERSION = '0.0.1'
-  ValidTypes = [:deepener, :induction, :deduction, :scripts] 
+  ValidTypes = [:deepener, :inductions, :deduction, :scripts] 
 
   attr_reader :options
 
@@ -81,6 +81,13 @@ class App
     # Performs post-parse processing on options
     def process_options
       @options.verbose = false if @options.quiet
+
+      # deduce name and type out of source path
+      debugger
+      script_path = @arguments[0]
+      type_of_script, name_of_script = script_path.match( %r{^source/([\w-]+)/([\w-]+)\.txt} )[1,2]
+      @options.type_of_script ||= type_of_script 
+      @options.name_of_script ||= name_of_script
     end
     
     def output_options
@@ -98,7 +105,6 @@ class App
     
     # Setup the arguments
     def process_arguments
-      # TO DO - place in local vars, etc
     end
     
     def output_help
