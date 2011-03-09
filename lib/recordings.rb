@@ -6,8 +6,51 @@ require 'fileutils'
 require 'lib/roxx/shell'
 require 'open3'
 require 'ruby-debug'
+require 'lib/ecasound'
 
 require 'lib/recordings/utils'
+
+class EcasoundError < RuntimeError; end
+class EcasoundCommandError < EcasoundError
+    attr_accessor :command, :error
+    def initialize(command, error)
+        @command = command
+        @error = error
+    end
+end
+
+class AudioPlayer < Ecasound::ControlInterface
+  def initialize path
+    super( "-i #{path} -o jack,system" )
+  end
+  def start
+    command("start")
+  end
+  def rewind s
+    command("rewind #{s}")
+  end
+  def forward s
+    command("forward #{s}")
+  end
+  def stop
+    command("stop")
+  end
+  def quit
+    stop
+    command("quit")
+    cleanup
+  end
+  def get_length
+    @length ||= command("get-length")
+  end
+  def get_position
+    command("get-position")
+  end
+
+  def get_perc_position
+    get_length == 0 ? 0 : ( 100 * get_position / get_length ) 
+  end
+end
 
 class ScriptRecording
 
@@ -41,9 +84,9 @@ class ScriptRecording
   def record
     # check if directory already exists
     # raise when exists .. make sure we don't overwrite
-    if target_dir.exist?
-      raise "Target directory exists .. please move out of the way ..."
-    end
+    #if target_dir.exist?
+    #  raise "Target directory exists .. please move out of the way ..."
+    #end
     ensure_target_dir_exists
 
     # forall paragraphs call record
@@ -58,11 +101,26 @@ class ScriptRecording
     end
   end
 
+  # opens all paragraphs in audacity
+  def open_paragraphs_in_audacity
+    edit_paragraphs = ohai_question "Open paragraphs in audacity (Y/n)? ", 13 => :yes, ?y => :yes, ?n => :no, ?Y => :yes
+    if edit_paragraphs == :yes
+      @paragraphs.each do |paragraph|
+        `open -a Audacity #{paragraph.file_path}`
+      end
+      opoo "Press Enter to continue rendering ..."
+      Tty.getc
+    end
+  end
+
   # Pathname -> Boolean
   def render
     # remove silences at beginning and end
     # call sox to concatenate recordings
     # save into target sctip
+    opoo "Rendering recording to ... source/#{@type}/#{@name}.mp3"
+    concatenated_file = sox @paragraphs.map(&:file_path)
+    `lame --preset extreme #{concatenated_file.path} source/#{@type}/#{@name}.mp3`
   end
 
   def script_target_path
@@ -81,22 +139,53 @@ class ParagraphRecording
     @text_path = text_path
   end
 
+  def display_banner
+    # display paragraph
+    Tty.clear
+    ohai "Preparing to record paragraph #{@count + 1} of #{@script_recording.paragraphs.size}", "", @paragraph, ""
+  end
+
   # -> Boolean
   #
   # returns true when recording was defined a success
   #
   def record
+    display_banner
+
     @script_recording.ensure_target_dir_exists
     # when file is defined, this is a second
     # recording, unlink previous one and create
     # new target
     if file_path.exist?
-      remove_files
+      begin
+        audio = AudioPlayer.new(file_path)
+        audio.start
+
+        while true
+          searching_speed = 3
+          old_paragraph_file_ok = ohai_question "Found an existing paragraph file (#{"%.2f" % audio.get_length} seconds), keep it? (Enter = yes, Space = No, (.) = forward #{searching_speed}s, (,) rewind #{searching_speed}s)", 13 => :yes, 32 => :no, 44 => :rewind, 46 => :forward
+
+          display_banner
+          case old_paragraph_file_ok
+          when :yes
+            return true
+          when :no
+            remove_files
+            break
+          when :rewind
+            audio.rewind(searching_speed)
+            ohai "rewinding #{searching_speed} seconds back to #{"%d" % audio.get_perc_position}%"
+          when :forward
+            audio.forward(searching_speed)
+            ohai "forwarding #{searching_speed} seconds to #{"%d" % audio.get_perc_position}%"
+          end
+        end
+
+      ensure
+        audio.quit
+      end
     end
 
-    # display paragraph
-    Tty.clear
-    ohai "Preparing to record paragraph #{@count + 1} of #{@script_recording.paragraphs.size}", "", @paragraph, ""
 
     # [Enter to start recording]
     ohai "Press enter to start recording, hit Enter again to stop recording"
@@ -152,12 +241,13 @@ class ParagraphRecording
     end
   end
 
-  protected
-
   # Pathname
   def file_path
     @script_recording.target_dir + ( "paragraph-%02d.wav" % @count )
   end
+
+  protected
+
 
   # Pathname
   def text_path
