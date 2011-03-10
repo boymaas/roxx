@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby 
 
-# add current-dir to load-path
-$:.unshift(File.expand_path(File.dirname(__FILE__))) unless
-    $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
+require 'pathname'
+
+root_dir = Pathname.new(__FILE__).dirname.parent
+$:.unshift(root_dir) unless $:.include?(root_dir) || $:.include?(root_dir.realpath)
 
 require 'lib/roxx'
 
