@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{roxx}
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Boy Maas"]
   s.date = %q{2011-03-10}
-  s.description = %q{TODO: longer description of your gem}
+  s.description = %q{Wrapper around Sox to generate multitrack files}
   s.email = %q{boy.maas@gmail.com}
   s.executables = ["record-script", "extract_audio_and_remove_silence.rb", "roxx"]
   s.extra_rdoc_files = [
@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".document",
+    ".rvmrc",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
@@ -49,6 +50,7 @@ Gem::Specification.new do |s|
     "lib/roxx/sox_renderable.rb",
     "lib/roxx/tmpfiles.rb",
     "lib/roxx/track.rb",
+    "roxx.gemspec",
     "spec/caching_spec.rb",
     "spec/data/intro.wav",
     "spec/data/recordings-paragraph.txt",
@@ -68,7 +70,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.6.1}
-  s.summary = %q{TODO: one-line summary of your gem}
+  s.summary = %q{Wrapper around Sox}
   s.test_files = [
     "spec/caching_spec.rb",
     "spec/helpers.rb",
