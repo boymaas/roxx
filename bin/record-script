@@ -18,6 +18,10 @@ require 'rdoc/usage'
 require 'ostruct'
 require 'date'
 
+# add current-dir to load-path
+$:.unshift(File.expand_path(File.dirname(__FILE__))) unless
+    $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
+
 require 'lib/recordings'
 
 class App
