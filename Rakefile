@@ -37,6 +37,24 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
+# Versioning and releasing on github
+namespace :release do
+  #desc "create a new version, create tag and push to github"
+  task :github_and_tag do
+    #Rake::Task['github:release'].invoke
+    Rake::Task['git:release'].invoke
+  end
+
+  [:path, :minor, :major].each do |type|
+    desc "Release new #{type} version on github" 
+    task type do
+      Rake::Task["version:bump:#{type}"].invoke
+      Rake::Task['release:github_and_tag'].invoke
+    end
+  end
+
+end
+
 task :default do
   puts "Welcome to Roxx, run rake -T to see what can be done ..."
 end
