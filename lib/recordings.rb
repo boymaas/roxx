@@ -66,7 +66,7 @@ class ScriptRecording
   #  -> Pathname
   def target_dir
     # determine dirname based on type and name
-    @target_dir ||= Pathname.new "recordings/#{@fpath.dirname}"
+    @target_dir ||= Pathname.new "recordings/#{@fpath.dirname}/#{timestamp}"
   end
 
   def ensure_target_dir_exists
@@ -123,9 +123,13 @@ class ScriptRecording
     `lame --preset extreme #{concatenated_file.path} #{script_target_path}`
   end
 
+  def timestamp
+    @timestamp ||= Time.now.strftime('%Y%m%d%H%M')
+  end
+
   def script_target_path
     # determine script target path based on type and name
-    @fpath.chomp('.txt') + '.mp3'
+    @fpath.chomp('.txt') + "-#{timestamp}.mp3"
   end
 end
 
@@ -144,6 +148,7 @@ class ParagraphRecording
     # display paragraph
     Tty.clear
     ohai "Preparing to record paragraph #{@count + 1} of #{@script_recording.paragraphs.size}", "", @paragraph, ""
+    ohai "into #{file_path}"
   end
 
   # -> Boolean
