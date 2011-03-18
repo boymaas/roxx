@@ -45,7 +45,7 @@ namespace :release do
     Rake::Task['git:release'].invoke
   end
 
-  [:path, :minor, :major].each do |type|
+  [:patch, :minor, :major].each do |type|
     desc "Release new #{type} version on github" 
     task type do
       Rake::Task["version:bump:#{type}"].invoke

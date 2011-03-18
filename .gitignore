@@ -23,6 +23,7 @@ docs
 recordings
 scripts
 source
+roxx-data
 
 # Have editor/IDE/OS specific files you need to ignore? Consider using a global gitignore: 
 #
