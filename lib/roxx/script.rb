@@ -18,8 +18,6 @@ class Script
   end
 
   def render
-    
-
     # filter out non-focused tracks
     # and set volume to 1
     if @tracks.any?(&:is_focused?)

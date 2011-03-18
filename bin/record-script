@@ -73,8 +73,6 @@ class App
       opts.on('-V', '--verbose')    { @options.verbose = true }  
       opts.on('-q', '--quiet')      { @options.quiet = true }
 
-      opts.on('-t', '--type-of-script TYPE') { |type| @options.type_of_script = type }
-      opts.on('-n', '--name-of-script NAME') { |name| @options.name_of_script = name }
       # TO DO - add additional options
             
       opts.parse!(@arguments) rescue return false
@@ -89,9 +87,6 @@ class App
 
       # deduce name and type out of source path
       script_path = @arguments[0]
-      type_of_script, name_of_script = script_path.match( %r{^source/([\w-]+)/([\w-]+)\.txt} )[1,2]
-      @options.type_of_script ||= type_of_script 
-      @options.name_of_script ||= name_of_script
     end
     
     def output_options
@@ -104,7 +99,7 @@ class App
 
     # True if required arguments were provided
     def arguments_valid?
-      @options.type_of_script and @options.name_of_script and @arguments.length == 1 
+      @arguments.length == 1 
     end
     
     # Setup the arguments
@@ -133,11 +128,7 @@ class App
 
       buffer = File.open(filename).read
       
-      unless ValidTypes.any? {|vt| vt == @options.type_of_script.to_sym }
-        raise "Supplied type [#{ @options.type_of_script }] is not valid, choose one of #{ValidTypes * ", "}"
-      end
-
-      @script_recording = ScriptRecording.new(@options.type_of_script, @options.name_of_script, buffer)
+      @script_recording = ScriptRecording.new(filename, buffer)
       @script_recording.record
       @script_recording.open_paragraphs_in_audacity
       @script_recording.render

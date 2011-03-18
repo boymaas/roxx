@@ -57,8 +57,8 @@ class ScriptRecording
   attr_reader :paragraphs
 
   # String -> String -> String -> ScriptRecording
-  def initialize(type, name, script)
-    @type, @name, @original_text = type, name, script
+  def initialize(fpath, script)
+    @fpath, @original_text = Pathname.new(fpath), script
     @paragraphs = split_into_paragraphs(script).
       map_with_index {|p,i| ParagraphRecording.new(self,i,p)}
   end
@@ -66,7 +66,7 @@ class ScriptRecording
   #  -> Pathname
   def target_dir
     # determine dirname based on type and name
-    @target_dir ||= Pathname.new "recordings/#{@type}/#{@name}/"
+    @target_dir ||= Pathname.new "recordings/#{@fpath.dirname}"
   end
 
   def ensure_target_dir_exists
@@ -118,13 +118,14 @@ class ScriptRecording
     # remove silences at beginning and end
     # call sox to concatenate recordings
     # save into target sctip
-    opoo "Rendering recording to ... source/#{@type}/#{@name}.mp3"
+    opoo "Rendering recording to ... #{script_target_path}"
     concatenated_file = sox @paragraphs.map(&:file_path)
-    `lame --preset extreme #{concatenated_file.path} source/#{@type}/#{@name}.mp3`
+    `lame --preset extreme #{concatenated_file.path} #{script_target_path}`
   end
 
   def script_target_path
     # determine script target path based on type and name
+    @fpath.chomp('.txt') + '.mp3'
   end
 end
 
