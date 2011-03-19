@@ -49,6 +49,10 @@ namespace :release do
     desc "Release new #{type} version on github" 
     task type do
       Rake::Task["version:bump:#{type}"].invoke
+      Rake::Task["gemspec"].invoke
+      sh 'git add roxx.gemspec'
+      sh 'git commit -m "gemspec updated"'
+      sh 'git push'
       Rake::Task['release:github_and_tag'].invoke
     end
   end
