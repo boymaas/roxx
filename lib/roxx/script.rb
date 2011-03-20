@@ -69,7 +69,7 @@ class Script
           File.open(path)
         end
         # if first cache hit, no need to copy it over
-        unless mp3_file.path == path
+        unless mp3_file.path.to_s == path
           FileUtils.cp mp3_file.path, path 
         end
       end
