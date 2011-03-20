@@ -34,6 +34,12 @@ class Track
     end
   end
 
+  def render_in_thread
+    Thread.new do
+      render
+    end
+  end
+
   def is_focused?
     @focus
   end

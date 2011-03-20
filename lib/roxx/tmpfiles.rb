@@ -1,4 +1,21 @@
-class WavTempfile < Tempfile
+TempfileRegistery = []
+
+class RegisteredTempfile < Tempfile
+  def initialize *params
+    super(*params)
+    TempfileRegistery << self
+  end
+
+  def self.unlink_registery
+    TempfileRegistery.each do |tmpf|
+      tmpf.close unless tmpf.closed?
+      tmpf.unlink if tmpf.path
+    end
+    TempfileRegistery.clear
+  end
+end
+
+class WavTempfile < RegisteredTempfile
   include SoundInfo
 
   def make_tmpname(basename, n)
@@ -7,7 +24,7 @@ class WavTempfile < Tempfile
 
 end
 
-class DatTempfile < Tempfile
+class DatTempfile < RegisteredTempfile
   def make_tmpname(basename, n)
     sprintf('%s%d.%d.dat', basename, $$, n)
   end

@@ -29,7 +29,11 @@ class Script
     end
 
     @file = cache_file :script_file, [self.to_hash] do
-      @tracks.map(&:render)
+      # multithreaded rendering
+      render_threads = 
+        @tracks.map(&:render_in_thread)
+      render_threads.map(&:join)
+
       if @tracks.count == 1
         if @tracks[0].volume == 1
           @file = @tracks[0].file
@@ -54,7 +58,7 @@ class Script
     case path
     when /\.mp3$/
       if IntermediateFileFormat == :mp3
-        unless @file.path == path
+        unless @file.path.to_s == path.to_s
           FileUtils.cp @file.path, path
         end
       elsif IntermediateFileFormat == :au
@@ -72,6 +76,11 @@ class Script
     else
       sox @file.path, :target => OpenStruct.new(:path => path)
     end
+    cleanup
+  end
+
+  def cleanup
+    RegisteredTempfile.unlink_registery
   end
 
 end

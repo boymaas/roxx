@@ -53,6 +53,7 @@ describe "defining a script with two sounds" do
 
   it "should save" do
    @script.save('spec/tmp/intro-spec-2.mp3')
+   TempfileRegistery.size.should == 0
    1.should == 1
   end
 end
