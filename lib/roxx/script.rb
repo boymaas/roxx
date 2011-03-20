@@ -65,7 +65,7 @@ class Script
         sox @file.path, :target => OpenStruct.new(:path => path)
       else
         mp3_file = cache_file :mp3_file, [self.to_hash,:lame_encoding] do
-          `lame --preset extreme #{@file.path} #{path} `
+          `lame --preset standard #{@file.path} #{path} `
           File.open(path)
         end
         # if first cache hit, no need to copy it over

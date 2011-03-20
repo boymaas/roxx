@@ -52,7 +52,7 @@ module SoxRenderable
     remaining_sounds = sounds - non_overlapping_sounds
 
     # render the sounds which will concatenated
-    non_overlapping_sounds.map(&:render)
+    non_overlapping_sounds.map(&:render_in_thread).map(&:join)
 
     # now fill gaps with silence
     #
@@ -63,13 +63,15 @@ module SoxRenderable
     non_overlapping_sounds.each_with_index do |snd,i|
       if position < snd.start_at
         silences[i] = Silence.new(:start_at => position, :duration => snd.start_at - position)
-        silences[i].render
       end
       position = snd.start_at + snd.duration
     end
+    
+    # render silences .. multithreaded
+    silences.reject(&:nil?).map(&:render_in_thread).map(&:join)
+
     # merge silences between sounds
     gapeless_sound_list = silences.zip(non_overlapping_sounds).flatten.reject &:nil?
-
 
     # now concatenate these sounds
     concatenated_sounds = 

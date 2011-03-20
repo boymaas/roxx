@@ -69,6 +69,12 @@ class Sound
   #  end
   end
 
+  def render_in_thread
+    Thread.new do
+      render
+    end
+  end
+
   # DSL
   def effect name = nil, *params
     @effects << Effect.build(self, name, *params)
