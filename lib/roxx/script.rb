@@ -51,7 +51,9 @@ class Script
     case path
     when /\.mp3$/
       if IntermediateFileFormat == :mp3
-        FileUtils.cp @file.path, path
+        unless @file.path == path
+          FileUtils.cp @file.path, path
+        end
       elsif IntermediateFileFormat == :au
         sox @file.path, :target => OpenStruct.new(:path => path)
       else

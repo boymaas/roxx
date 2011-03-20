@@ -129,7 +129,7 @@ class ScriptRecording
 
   def script_target_path
     # determine script target path based on type and name
-    @fpath.chomp('.txt') + "-#{timestamp}.mp3"
+    @fpath.to_s.chomp('.txt') + "-#{timestamp}.mp3"
   end
 end
 
