@@ -18,7 +18,7 @@ def sox original, *params
               params * ' '
             end
 
-  run "sox --multi-threaded --buffer 131072 #{sox_options} #{original} -c 2 -r 44100 #{target.path} #{effects}"
+  run "sox --buffer 131072 #{sox_options} #{original} -c 2 -r 44100 #{target.path} #{effects}"
   target
 end
 
