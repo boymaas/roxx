@@ -5,6 +5,9 @@ class Script
     @tracks = []
     @file = nil
 
+    # takes too much space on device
+    disable_cache_file
+
     @dependencies
   end
 

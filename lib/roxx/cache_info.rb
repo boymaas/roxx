@@ -13,10 +13,18 @@ module CacheInfo
 
   end
 
+  def disable_cache_file
+    @cache_info_disable_cache_file = true
+  end
+
   # either cache using file or execute block
   #
   # cache_file [:this, :are, :cache, :params]
   def cache_file prefix, cache_params, opts = {}
+    if @cache_info_disable_cache_file
+      return yield
+    end
+
     # when MD5 hexdigit of cache_params matches
     # read file from cache
     _cache_path = cache_pathname(prefix, cache_params, opts.fetch(:ext, IntermediateFileFormat))

@@ -15,6 +15,8 @@ class Track
     @effects = []
     @volume = 1
     @focus = false
+
+    disable_cache_file
   end
 
   def dependencies
