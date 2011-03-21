@@ -70,7 +70,11 @@ class Script
         end
         # if first cache hit, no need to copy it over
         unless mp3_file.path.to_s == path
-          FileUtils.cp mp3_file.path, path 
+          begin
+            FileUtils.cp mp3_file.path, path 
+          rescue ArgumentError => e
+            puts "ArgumentError: " + e
+          end
         end
       end
     else
