@@ -36,7 +36,7 @@ end
 def_effect :fade, [:type, :fade_in_length, :stop_time, :fade_out_length] do
   def_param_defaults :type => :q, :fade_in_length => 8, :stop_time => 0, :fade_out_length => 8
   def_param_filter do |file,params|
-    params[2] = file.info[:length_seconds]
+    params[2] ||= file.info[:length_seconds]
     params
   end
 end

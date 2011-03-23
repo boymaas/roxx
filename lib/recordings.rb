@@ -66,7 +66,11 @@ class ScriptRecording
   #  -> Pathname
   def target_dir
     # determine dirname based on type and name
-    @target_dir ||= Pathname.new "recordings/#{@fpath.dirname}/#{timestamp}"
+    target_dir_without_tstamp + "#{timestamp}/"
+  end
+
+  def target_dir_without_tstamp
+    Pathname.new "recordings/#{@fpath.dirname}/#{ @fpath.basename.to_s.chomp('.txt') }/"
   end
 
   def ensure_target_dir_exists
@@ -84,9 +88,23 @@ class ScriptRecording
   def record
     # check if directory already exists
     # raise when exists .. make sure we don't overwrite
-    #if target_dir.exist?
-    #  raise "Target directory exists .. please move out of the way ..."
-    #end
+    if target_dir_without_tstamp.exist?
+      timestamps = Dir["#{ target_dir_without_tstamp }/*"].map {|tsdir| tsdir.match(%r{/(\d+)/?})[1]}.sort
+      if timestamps.size > 0
+        timestamps.each_with_index do |ts,i|
+          opoo "Recording #{i+1}: " + ts
+        end
+        continue_with = 
+          ohai_question "Previous recordings exists .. want to overwrite one of them (n = create new one, digit = the timestamp you would like to use)?",
+          ([ [ ?n,0 ] ] + (1..timestamps.size).map {|i| [ (i).to_s[0], i ] }).to_h         
+        case continue_with
+        when 0
+        else
+          @timestamp = timestamps[continue_with-1]
+        end
+      end
+    end
+
     ensure_target_dir_exists
 
     # forall paragraphs call record
@@ -120,16 +138,27 @@ class ScriptRecording
     # save into target sctip
     opoo "Rendering recording to ... #{script_target_path}"
     concatenated_file = sox @paragraphs.map(&:file_path)
+    if File.exist? script_target_path
+      case ohai_question "Target-file already exists #{script_target_path}. Backup ? (y/n)", ?y => :yes, ?n => :no
+      when :yes
+        FileUtils.mv script_target_path, script_target_path.chomp('.mp3')  + "-backup-#{timestamp_uncached}.mp3"
+      when :no
+      end
+    end
     `lame --preset extreme #{concatenated_file.path} #{script_target_path}`
   end
 
   def timestamp
-    @timestamp ||= Time.now.strftime('%Y%m%d%H%M')
+    @timestamp ||= timestamp_uncached
+  end
+  
+  def timestamp_uncached
+    Time.now.strftime('%Y%m%d%H%M')
   end
 
   def script_target_path
     # determine script target path based on type and name
-    @fpath.to_s.chomp('.txt') + "-#{timestamp}.mp3"
+    @fpath.to_s.chomp('.txt') + ".mp3"
   end
 end
 
