@@ -87,10 +87,20 @@ class Track
   def concat_sounds sounds, opts = {}
     opts.reverse_merge! :start_at => 0, :interval => 5
 
+    max_duration = opts.delete(:max_duration)
+
     p = opts[:start_at]
     for s in sounds
       ns = sound s, :start_at => p
+        
       p += ns.duration + opts[:interval]
+
+      unless max_duration.nil?
+        # cut off duration
+        ns.duration = max_duration if ns.duration > max_duration
+        max_duration -= ns.duration
+        break if max_duration <= 0 # will endup at 0, but < to be safe
+      end
     end
 
   end
