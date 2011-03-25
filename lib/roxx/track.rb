@@ -8,6 +8,7 @@ module Roxx
     include SoxRenderable
     include CacheInfo
     include Shell
+    include Presets
 
     attr_accessor :file
 
@@ -112,7 +113,7 @@ module Roxx
     end
 
     def preset name
-      self.instance_eval &::PreSets[name]
+      self.instance_eval &Presets::Library[name]
     end
 
     # Sox interaction

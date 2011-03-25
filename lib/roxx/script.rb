@@ -1,6 +1,7 @@
 module Roxx
   class Script
     include CacheInfo
+    include Shell
 
     def initialize
       @tracks = []

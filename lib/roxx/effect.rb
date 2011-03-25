@@ -1,5 +1,6 @@
 module Roxx
   class Effect
+    include CacheInfo
 
     attr_reader :start_at, :duration
     attr_accessor :custom_effect
