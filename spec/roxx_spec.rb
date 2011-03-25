@@ -1,6 +1,7 @@
 require 'spec/helpers'
 require 'lib/roxx'
 
+
 #describe "defining a script with one sound" do
 #  before do
 #    clear_cache
@@ -24,7 +25,7 @@ require 'lib/roxx'
 describe "defining a script with two sounds" do
   before do
     clear_cache
-    @script = script do
+    @script = Roxx::script do
       #track do
       # (0..20).each do |os|
       #   sound 'spec/data/intro.wav', :start_at => os*0.2, :offset => 2

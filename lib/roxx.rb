@@ -34,11 +34,16 @@ require 'ruby-debug'
 #
 # .au cannot be used in conjunction with lame .. but it' the fastest of the bunch
 #
-IntermediateFileFormat = :wav
+
+
+module Roxx
+  IntermediateFileFormat = :wav
+end
+
 
 # add current-dir to load-path
 $:.unshift(File.expand_path(File.dirname(__FILE__))) unless
-    $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
+$:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 require 'roxx/cache_info'
 require 'roxx/sound_info'
@@ -58,10 +63,13 @@ require 'roxx/effect_library'
 
 require 'roxx/preset'
 
-# DSL
-#
-def script &block
-  ( script = Script.new ).instance_eval &block
-  script
-end
 
+module Roxx
+  # DSL
+  #
+  def self.script &block
+    ( script = Script.new ).instance_eval &block
+    script
+  end
+
+end
