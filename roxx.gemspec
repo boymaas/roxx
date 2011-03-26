@@ -5,14 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{roxx}
-  s.version = "0.4.15"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Boy Maas"]
-  s.date = %q{2011-03-24}
+  s.date = %q{2011-03-26}
   s.description = %q{Wrapper around Sox to generate multitrack files}
   s.email = %q{boy.maas@gmail.com}
-  s.executables = ["record-script", "extract_audio_and_remove_silence.rb", "roxx"]
+  s.executables = ["extract_audio_and_remove_silence.rb", "roxx"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -27,20 +27,13 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "bin/extract_audio_and_remove_silence.rb",
-    "bin/record-script",
     "bin/roxx",
     "docs/recording-tapes.mkd",
     "docs/spec.txt",
-    "lib/ecasound.rb",
-    "lib/entrainment.rb",
-    "lib/hypnotic_script.rb",
-    "lib/recordings.rb",
-    "lib/recordings/utils.rb",
     "lib/roxx.rb",
     "lib/roxx/cache_info.rb",
     "lib/roxx/effect.rb",
     "lib/roxx/effect_library.rb",
-    "lib/roxx/hexdigest.rb",
     "lib/roxx/preset.rb",
     "lib/roxx/script.rb",
     "lib/roxx/shell.rb",
