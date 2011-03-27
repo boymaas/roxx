@@ -50,7 +50,8 @@ require 'roxx/sound_info'
 require 'roxx/shell'
 require 'roxx/tmpfiles'
 
-require 'roxx/sox_renderable'
+#require 'roxx/sox_renderable'
+require 'roxx/ecasound_renderable'
 
 require 'roxx/preset'
 require 'roxx/script'

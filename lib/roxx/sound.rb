@@ -1,11 +1,14 @@
 module Roxx
   class Sound
-    include SoxRenderable
     include SoundInfo
     include CacheInfo
     include Shell
+    include EcasoundRenderable
 
     attr_accessor :start_at, :volume, :file, :offset, :track, :duration
+    attr_accessor :ecasound_params
+    attr_accessor :ecasound_channel_ref
+
     def initialize(track, options = {})
       @track = track
       @start_at = options.delete(:start_at) || 0
@@ -19,6 +22,8 @@ module Roxx
 
       @sounds = options.delete(:sounds) || []
       @effects = []
+
+      @ecasound_params = nil
     end
 
     def to_hash
@@ -63,24 +68,18 @@ module Roxx
       end
     end
 
-    def render
-      #  @file = cache_file :sound_file, [self.to_hash] do
-      prepare
-      # calls SoxRenderable
-      super(@file, @sounds, @effects)
-      #  end
-    end
-
-    def render_in_thread
-      Thread.new do
-        render
-      end
-    end
-
     # DSL
     def effect name = nil, *params
       @effects << Effect.build(self, name, *params)
     end
+
+    def to_ecasound_param
+      @ecasound_channel_ref, @ecasound_params = 
+        build_ecasound_params [self, *@sounds], @volume
+
+      @ecasound_params
+    end
+
   end
 
   class RenderedSound < Sound

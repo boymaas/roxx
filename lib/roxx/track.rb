@@ -5,12 +5,13 @@ module Roxx
 
   class Track
     include TrackExtentions
-    include SoxRenderable
     include CacheInfo
     include Shell
     include Presets
+    include EcasoundRenderable
 
-    attr_accessor :file
+    attr_accessor :file, :sounds
+    attr_reader :ecasound_channel_ref
 
     def initialize(script)
       @script = script
@@ -28,19 +29,6 @@ module Roxx
 
     def to_hash
       hexdigest(@sounds, @effects)
-    end
-
-    def render
-      # calls SoxRenderable
-      @file = cache_file :track_file, [self.to_hash] do
-        super(nil, @sounds, @effects)
-      end
-    end
-
-    def render_in_thread
-      Thread.new do
-        render
-      end
     end
 
     def is_focused?
@@ -119,6 +107,14 @@ module Roxx
     # Sox interaction
     def to_sox_param
       "-v #{@volume} #{@file.path}"
+    end
+
+    # eacsound
+    def to_ecasound_param
+      @ecasound_channel_ref, @ecasound_params = 
+        build_ecasound_params @sounds, @volume
+
+      @ecasound_params
     end
 
   end

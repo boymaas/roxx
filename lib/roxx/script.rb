@@ -3,6 +3,7 @@ module Roxx
     include CacheInfo
     include Shell
 
+
     def initialize
       @tracks = []
       @file = nil
@@ -22,31 +23,17 @@ module Roxx
       @tracks.map(&:dependencies).flatten.sort.uniq
     end
 
-    def render
-      # filter out non-focused tracks
-      # and set volume to 1
-      if @tracks.any?(&:is_focused?)
-        @tracks.reject! {|t| !t.is_focused?}
-        @tracks.each { |t| t.volume 1 }
-      end
+    def render target
+      # build all tracks
+      # run cmd
+      ecasound_sources = @tracks.map {|t| t.to_ecasound_param }.flatten
+      command = <<-cmd
+        ecasound #{ecasound_sources * " "} -a:#{@tracks.map(&:ecasound_channel_ref) * ','} -o #{target}
+      cmd
 
-      @file = cache_file :script_file, [self.to_hash] do
-        # multithreaded rendering
-        render_threads = 
-          @tracks.map(&:render_in_thread)
-        render_threads.map(&:join)
+      $stderr.puts command
+      run command
 
-        if @tracks.count == 1
-          if @tracks[0].volume == 1
-            @file = @tracks[0].file
-          else
-            @file = sox @tracks[0].to_sox_param
-          end
-        else
-          @file = sox @tracks.map(&:to_sox_param), :sox_options => '-m'
-        end
-        @file
-      end
     end
 
     # DSL
@@ -56,33 +43,7 @@ module Roxx
 
     # Saving
     def save path
-      render
-      case path
-      when /\.mp3$/
-        if IntermediateFileFormat == :mp3
-          unless @file.path.to_s == path.to_s
-            FileUtils.cp @file.path, path
-          end
-        elsif IntermediateFileFormat == :au
-          sox @file.path, :target => OpenStruct.new(:path => path)
-        else
-          mp3_file = cache_file :mp3_file, [self.to_hash,:lame_encoding] do
-            `lame --preset standard #{@file.path} #{path} `
-            File.open(path)
-          end
-          # if first cache hit, no need to copy it over
-          unless mp3_file.path.to_s == path
-            begin
-              FileUtils.cp mp3_file.path, path 
-            rescue ArgumentError => e
-              puts "ArgumentError: " + e
-            end
-          end
-        end
-      else
-        sox @file.path, :target => OpenStruct.new(:path => path)
-      end
-      cleanup
+      render path
     end
 
     def cleanup
