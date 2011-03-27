@@ -49,15 +49,16 @@ describe "defining a script with two sounds" do
        #effect_bassbooster
        #effect_reverb1
        preset :hypnotic_voice
-       effect_sweeping_pan 0.05, 0
+       effect_fade 8
+       #effect_sweeping_pan 0.05, 0
        volume 1
       end
-      track do
-       sound 'spec/data/preperation.mp3'
-       preset :hypnotic_voice
-       effect_sweeping_pan 0.05, 45
-       volume 1
-      end
+      #track do
+      # sound 'spec/data/preperation.mp3'
+      # preset :hypnotic_voice
+      # effect_sweeping_pan 0.05, 45
+      # volume 1
+      #end
       
       #track do
       # concat_sounds [ 'spec/data/intro.wav' ] * 2, :max_duration => 10

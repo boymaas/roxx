@@ -24,7 +24,7 @@ module Roxx
         sound = sounds.first
 
         ecasound_channel_ref = get_ecasound_uidx
-        ecasound_params = [ "-a:#{ecasound_channel_ref} -i playat,#{sound.start_at},select,#{sound.offset},#{sound.duration},#{sound.path} -ea #{volume * sound.volume * 100} #{effects.map(&:call) * ' '}" ] 
+        ecasound_params = [ "-a:#{ecasound_channel_ref} -i playat,#{sound.start_at},select,#{sound.offset},#{sound.duration},#{sound.path} -ea:#{volume * sound.volume * 100} #{effects.map(&:call) * ' '}" ] 
 
       else
         # if we have child sources render them indivudally
@@ -43,7 +43,7 @@ module Roxx
         # we get a new channel ref .. since loops are grouped
         ecasound_channel_ref = get_ecasound_uidx
         ecasound_params +=
-          ["-a:#{ecasound_channel_ref} -i #{ecasound_loopback} -ea #{volume * 100} #{effects.map(&:call) * ' '}"]
+          ["-a:#{ecasound_channel_ref} -i #{ecasound_loopback} -ea:#{volume * 100} #{effects.map(&:call) * ' '}"]
       end
 
       # terurn params and resulting channel reference
