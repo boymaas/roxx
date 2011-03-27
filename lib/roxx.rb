@@ -59,7 +59,6 @@ require 'roxx/track'
 require 'roxx/sound'
 require 'roxx/silence'
 require 'roxx/effect'
-require 'roxx/effect_library'
 
 
 module Roxx

@@ -12,7 +12,7 @@ module Roxx
 
     # ecasound
     # -> [ecasound params]
-    def build_ecasound_params sounds, volume
+    def build_ecasound_params sounds, volume, effects = []
 
       if sounds.empty?
         # nothing to do
