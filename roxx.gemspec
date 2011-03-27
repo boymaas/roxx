@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{roxx}
-  s.version = "0.5.0"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Boy Maas"]
@@ -32,8 +32,8 @@ Gem::Specification.new do |s|
     "docs/spec.txt",
     "lib/roxx.rb",
     "lib/roxx/cache_info.rb",
+    "lib/roxx/ecasound_renderable.rb",
     "lib/roxx/effect.rb",
-    "lib/roxx/effect_library.rb",
     "lib/roxx/preset.rb",
     "lib/roxx/script.rb",
     "lib/roxx/shell.rb",
@@ -49,12 +49,10 @@ Gem::Specification.new do |s|
     "spec/data/recordings-paragraph.txt",
     "spec/data/script.txt",
     "spec/helpers.rb",
-    "spec/recordings_spec.rb",
     "spec/roxx_spec.rb",
     "spec/sound_info_spec.rb",
     "spec/spec_helper.rb",
-    "spec/tmp/intro-spec-2.mp3",
-    "spec/tmp/intro.mp3",
+    "spec/tmp/README",
     "support/JackOSX.0.87_64-32bits.zip",
     "support/discord-3.2.1.tar.bz2",
     "support/ecasound-2.7.2.tar.gz"
@@ -67,7 +65,6 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/caching_spec.rb",
     "spec/helpers.rb",
-    "spec/recordings_spec.rb",
     "spec/roxx_spec.rb",
     "spec/sound_info_spec.rb",
     "spec/spec_helper.rb"
