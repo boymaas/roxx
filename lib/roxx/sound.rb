@@ -75,7 +75,7 @@ module Roxx
 
     def to_ecasound_param
       @ecasound_channel_ref, @ecasound_params = 
-        build_ecasound_params [self, *@sounds], @volume
+        build_ecasound_params [self, *@sounds], @volume, @effects
 
       @ecasound_params
     end

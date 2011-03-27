@@ -27,11 +27,11 @@ module Roxx
       # build all tracks
       # run cmd
       ecasound_sources = @tracks.map {|t| t.to_ecasound_param }.flatten
-      command = <<-cmd
+      command = <<-cmd.gsub(/^\s+/,'')
         ecasound #{ecasound_sources * " "} -a:#{@tracks.map(&:ecasound_channel_ref) * ','} -o #{target}
       cmd
 
-      $stderr.puts command
+      $stderr.puts "\n"*2 + command.gsub(/-a:[\d,]+/, "\n    \\0") + "\n"*2
       run command
 
     end

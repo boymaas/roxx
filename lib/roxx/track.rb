@@ -9,9 +9,11 @@ module Roxx
     include Shell
     include Presets
     include EcasoundRenderable
+    include Effect
 
     attr_accessor :file, :sounds
     attr_reader :ecasound_channel_ref
+    attr_writer :duration
 
     def initialize(script)
       @script = script
@@ -19,6 +21,7 @@ module Roxx
       @effects = []
       @volume = 1
       @focus = false
+      @duration = nil
 
       disable_cache_file
     end
@@ -33,6 +36,10 @@ module Roxx
 
     def is_focused?
       @focus
+    end
+
+    def duration
+      @duration || @sounds.map(&:stop_at).max
     end
 
     # DSL
@@ -112,7 +119,7 @@ module Roxx
     # eacsound
     def to_ecasound_param
       @ecasound_channel_ref, @ecasound_params = 
-        build_ecasound_params @sounds, @volume
+        build_ecasound_params @sounds, @volume, @effects
 
       @ecasound_params
     end

@@ -52,13 +52,13 @@ require 'roxx/tmpfiles'
 
 #require 'roxx/sox_renderable'
 require 'roxx/ecasound_renderable'
+require 'roxx/effect'
 
 require 'roxx/preset'
 require 'roxx/script'
 require 'roxx/track'
 require 'roxx/sound'
 require 'roxx/silence'
-require 'roxx/effect'
 
 
 module Roxx
