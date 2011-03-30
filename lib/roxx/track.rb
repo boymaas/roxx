@@ -82,13 +82,16 @@ module Roxx
       @sounds.last
     end
 
+    # Will concatenate sounds
+    # creates new instances as to be sure
+    # not to displace previously used sounds
     def concat_sounds sounds, opts = {}
       opts.reverse_merge! :start_at => 0, :interval => 5
 
       max_duration = opts.delete(:max_duration)
 
       p = opts[:start_at]
-      for s in sounds
+      sounds.map do |s|
         ns = sound s, :start_at => p
 
         p += ns.duration + opts[:interval]
@@ -99,8 +102,8 @@ module Roxx
           max_duration -= ns.duration
           break if max_duration <= 0 # will endup at 0, but < to be safe
         end
+        ns
       end
-
     end
 
     def effect name = nil, *params
