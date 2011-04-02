@@ -1,7 +1,6 @@
 module Roxx
   class Sound
     include SoundInfo
-    include CacheInfo
     include Shell
     include EcasoundRenderable
 

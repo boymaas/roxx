@@ -5,7 +5,6 @@ module Roxx
 
   class Track
     include TrackExtentions
-    include CacheInfo
     include Shell
     include Presets
     include EcasoundRenderable
@@ -22,8 +21,6 @@ module Roxx
       @volume = 1
       @focus = false
       @duration = nil
-
-      disable_cache_file
     end
 
     def dependencies

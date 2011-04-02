@@ -1,6 +1,5 @@
 module Roxx
   class Script
-    include CacheInfo
     include Shell
     include Effect
     include EcasoundRenderable
@@ -12,9 +11,6 @@ module Roxx
       @file = nil
       @effects = []
       @volume = 1
-
-      # takes too much space on device
-      disable_cache_file
 
       @dependencies
     end
@@ -51,7 +47,7 @@ module Roxx
     end
 
     def render target
-      command = build_ecasound_cmd
+      command = build_ecasound_cmd target
       run command
     end
 
