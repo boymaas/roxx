@@ -58,7 +58,7 @@ module Roxx
     # DSL
     def track name = nil, &block
       @tracks << ( new_track = Track.new(self) ) 
-      if block.arity
+      if block.arity > 0
         block.call(new_track)
       else
         new_track.instance_eval( &block )

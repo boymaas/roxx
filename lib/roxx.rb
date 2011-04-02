@@ -65,7 +65,7 @@ module Roxx
   # DSL
   #
   def self.script &block
-    if block.arity
+    if block.arity > 0
       block.call( script = Script.new )
     else
       ( script = Script.new ).instance_eval &block
