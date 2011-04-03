@@ -57,6 +57,8 @@ module Roxx
         name = params.shift
       when String
         path = params.shift
+      when Pathname
+        path = params.shift.to_s
       when Sound
         # notice: create new instance of sound here
         # otherwise when adding same Sound.new object changes
