@@ -9,6 +9,10 @@
 #
 # would otherwise render the volume incorrectly
 #
+# Effect chains: chains are executed after one another
+# the reverb effect makes the sound a little softer, this is why
+# we -ea = effect amplify it with 160% if therse is a linear envelope earlier
+# in the chain the amplification is added to that value. Nice since we can compensate now.
 module Roxx
   module Effect
 
@@ -24,7 +28,7 @@ module Roxx
     end
 
     def effect_reverb1
-      @effects << lambda {"-ete:500,10,40"}
+      @effects << lambda {"-ete:500,100,40 -ea 160"}
     end
     def effect_echo
       @effects << lambda {"-etd:50,1,1,30"}
